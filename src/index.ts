@@ -1,2 +1,9 @@
+Error.stackTraceLimit = Infinity;
 
-console.log(`server`);
+require('events').EventEmitter.defaultMaxListeners = 128;
+
+import boot from './boot';
+
+export default function() {
+	return boot();
+}
