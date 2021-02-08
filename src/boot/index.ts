@@ -7,6 +7,7 @@ import { workerMain } from './worker';
 
 // for typeorm
 import 'reflect-metadata';
+import { getLocalActor } from '../services/get-local-actor';
 
 const logger = new Logger('core', 'cyan');
 export const bootLogger = logger.createSubLogger('boot', 'magenta', false);
@@ -21,6 +22,11 @@ export default async function() {
 	await workerMain();
 
 	bootLogger.succ(`Now listening on port ${config.port} on ${config.url}`, null, true);
+
+
+	// X
+	const a = await getLocalActor('actor');
+	console.log(JSON.stringify(a));
 
 	// for test
 	if (process.send) {

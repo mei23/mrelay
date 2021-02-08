@@ -12,7 +12,8 @@
 		"noLib": false,
 		"strictNullChecks": true,
 		"outDir": "built",
-		"rootDir": "src"
+		"rootDir": "src",
+		"experimentalDecorators": true
 	},
 	"compileOnSave": false,
 	"include": [
