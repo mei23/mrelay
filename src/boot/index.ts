@@ -9,15 +9,18 @@ import { workerMain } from './worker';
 import 'reflect-metadata';
 
 const logger = new Logger('core', 'cyan');
+export const bootLogger = logger.createSubLogger('boot', 'magenta', false);
 const ev = new Xev();
 
 /**
  * Init process
  */
 export default async function() {
-	await masterMain();
+	const config = await masterMain();
 	ev.mount();
 	await workerMain();
+
+	bootLogger.succ(`Now listening on port ${config.port} on ${config.url}`, null, true);
 
 	// for test
 	if (process.send) {

@@ -4,19 +4,16 @@ import Logger from '../services/logger';
 import loadConfig from '../config/load';
 import { Config } from '../config/types';
 import { initDb } from '../db/postgre';
-
-const logger = new Logger('core', 'cyan');
-const bootLogger = logger.createSubLogger('boot', 'magenta', false);
+import { bootLogger } from '.';
 
 /**
  * Init master process
  */
-export async function masterMain() {
-	let config!: Config;
-
+export async function masterMain(): Promise<Config> {
 	try {
 		// initialize app
-		config = await init();
+		const config = await init();
+		return config;
 	} catch (e) {
 		bootLogger.error('Fatal error occurred during initialization', null, true);
 		process.exit(1);
