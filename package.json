@@ -1,0 +1,32 @@
+{
+  "name": "mrelay",
+  "version": "0.1.0",
+  "description": "",
+  "author": "MeiMei <m@m544.net>",
+  "license": "MIT",
+  "repository": "https://github.com/mei23/mrelay.git",
+  "bugs": "https://github.com/mei23/mrelay/issues",
+  "main": "./built/index.js",
+  "types": "./built/index.d.ts",
+  "scripts": {
+    "build": "gulp build",
+    "lint": "eslint src/**/*.ts",
+    "start": "node ./built/index.js"
+  },
+  "homepage": "https://github.com/mei23/mrelay#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "4.14.2",
+    "@typescript-eslint/parser": "4.14.2",
+    "eslint": "7.19.0"
+  },
+  "dependencies": {
+    "@types/gulp": "4.0.8",
+    "@types/rimraf": "3.0.0",
+    "gulp": "4.0.2",
+    "gulp-sourcemaps": "3.0.0",
+    "gulp-typescript": "6.0.0-alpha.1",
+    "rimraf": "3.0.2",
+    "ts-node": "9.1.1",
+    "typescript": "4.1.3"
+  }
+}
