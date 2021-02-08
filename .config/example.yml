@@ -1,4 +1,12 @@
 url: https://example.net/
+port: 3320
+
+db:
+  host: localhost
+  port: 5432
+  db: mrelay
+  user: example-user
+  pass: example-pass
 
 redis:
   host: localhost
