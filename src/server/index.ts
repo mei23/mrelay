@@ -26,7 +26,7 @@ server.get('/actor', async (request, reply) => {
 		.code(200)
 		.type('application/activity+json')
 		.header('Cache-Control', 'public, max-age=180')
-		.send(attachContext(await renderActor(actor, 'actor')));
+		.send(attachContext(await renderActor(actor, `${config.url}/actor`)));
 });
 
 export default () => new Promise<void>((resolve, reject) => {

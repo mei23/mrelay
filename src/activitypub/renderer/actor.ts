@@ -1,11 +1,8 @@
-import config from '../../config';
 import { LocalActor } from '../../models/entities/local-actor';
 import { createPublicKey } from 'crypto';
 import { IActor } from '../type';
 
-export async function renderActor(user: LocalActor, base: string): Promise<IActor> {
-	const id = `${config.url}/${base}`;
-	
+export async function renderActor(user: LocalActor, id: string): Promise<IActor> {
 	const publicKey = {
 		id: `${id}#main-key`,
 		owner: `${id}`,
