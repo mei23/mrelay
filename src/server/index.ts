@@ -1,18 +1,20 @@
 import * as Fastify from 'fastify'
 import { renderActor } from '../activitypub/renderer/actor';
+import { attachContext } from '../activitypub/renderer';
 import config from '../config';
 import { LocalActors } from '../models';
 
 const server = Fastify.fastify({
 	logger: true,
 	trustProxy: [
-		'127.0.0.1', '::1'
+		'127.0.0.0/8', '10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16',
+		'::1'
 	],
 });
 
-server.get('/users/:id', async (request, reply) => {
+server.get('/actor', async (request, reply) => {
 	const actor = await LocalActors.findOne({
-		id: (request.params as any).id
+		usernameLower: 'actor'
 	});
 
 	if (actor == null) {
@@ -24,7 +26,7 @@ server.get('/users/:id', async (request, reply) => {
 		.code(200)
 		.type('application/activity+json')
 		.header('Cache-Control', 'public, max-age=180')
-		.send(await renderActor(actor));
+		.send(attachContext(await renderActor(actor, 'actor')));
 });
 
 export default () => new Promise<void>((resolve, reject) => {
