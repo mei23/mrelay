@@ -29,7 +29,7 @@ server.get('/actor', async (request, reply) => {
 		.send(attachContext(await renderActor(actor, `${config.url}/actor`)));
 });
 
-export default () => new Promise<void>((resolve, reject) => {
+export default (): Promise<void> => new Promise<void>((resolve, reject) => {
 	server.listen(config.port, '0.0.0.0', (err, address) => {
 		if (err) {
 			reject(err);
