@@ -3,6 +3,7 @@ import { renderActor } from '../activitypub/renderer/actor';
 import { attachContext } from '../activitypub/renderer';
 import config from '../config';
 import { LocalActors } from '../models';
+import { renderOrderedCollection } from '../activitypub/renderer/ordered-collection';
 
 const server = Fastify.fastify({
 	logger: true,
@@ -27,6 +28,57 @@ server.get('/actor', async (request, reply) => {
 		.type('application/activity+json')
 		.header('Cache-Control', 'public, max-age=180')
 		.send(attachContext(await renderActor(actor, `${config.url}/actor`)));
+});
+
+server.get('/actor/followers', async (request, reply) => {
+	const actor = await LocalActors.findOne({
+		usernameLower: 'actor'
+	});
+
+	if (actor == null) {
+		reply.code(404).send('Not Found');
+		return;
+	}
+
+	reply
+		.code(200)
+		.type('application/activity+json')
+		.header('Cache-Control', 'public, max-age=180')
+		.send(attachContext(await renderOrderedCollection(`${config.url}/actor/followers`)));
+});
+
+server.get('/actor/following', async (request, reply) => {
+	const actor = await LocalActors.findOne({
+		usernameLower: 'actor'
+	});
+
+	if (actor == null) {
+		reply.code(404).send('Not Found');
+		return;
+	}
+
+	reply
+		.code(200)
+		.type('application/activity+json')
+		.header('Cache-Control', 'public, max-age=180')
+		.send(attachContext(await renderOrderedCollection(`${config.url}/actor/following`)));
+});
+
+server.get('/actor/outbox', async (request, reply) => {
+	const actor = await LocalActors.findOne({
+		usernameLower: 'actor'
+	});
+
+	if (actor == null) {
+		reply.code(404).send('Not Found');
+		return;
+	}
+
+	reply
+		.code(200)
+		.type('application/activity+json')
+		.header('Cache-Control', 'public, max-age=180')
+		.send(attachContext(await renderOrderedCollection(`${config.url}/actor/outbox`)));
 });
 
 export default (): Promise<void> => new Promise<void>((resolve, reject) => {
