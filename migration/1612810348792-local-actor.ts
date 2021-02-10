@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 import {MigrationInterface, QueryRunner} from "typeorm";
 
 export class localActor1612810348792 implements MigrationInterface {
