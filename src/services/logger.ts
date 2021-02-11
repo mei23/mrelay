@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as cluster from 'cluster';
 import * as chalk from 'chalk';
 import * as dateformat from 'dateformat';
