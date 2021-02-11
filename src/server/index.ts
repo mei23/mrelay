@@ -2,8 +2,8 @@ import * as Fastify from 'fastify'
 import { renderActor } from '../activitypub/renderer/actor';
 import { attachContext } from '../activitypub/renderer';
 import config from '../config';
-import { LocalActors } from '../models';
 import { renderOrderedCollection } from '../activitypub/renderer/ordered-collection';
+import { getActor } from '../services/actor';
 
 const server = Fastify.fastify({
 	logger: true,
@@ -14,14 +14,7 @@ const server = Fastify.fastify({
 });
 
 server.get('/actor', async (request, reply) => {
-	const actor = await LocalActors.findOne({
-		usernameLower: 'actor'
-	});
-
-	if (actor == null) {
-		reply.code(404).send('Not Found');
-		return;
-	}
+	const actor = await getActor();
 
 	reply
 		.code(200)
@@ -31,15 +24,6 @@ server.get('/actor', async (request, reply) => {
 });
 
 server.get('/actor/followers', async (request, reply) => {
-	const actor = await LocalActors.findOne({
-		usernameLower: 'actor'
-	});
-
-	if (actor == null) {
-		reply.code(404).send('Not Found');
-		return;
-	}
-
 	reply
 		.code(200)
 		.type('application/activity+json')
@@ -48,15 +32,6 @@ server.get('/actor/followers', async (request, reply) => {
 });
 
 server.get('/actor/following', async (request, reply) => {
-	const actor = await LocalActors.findOne({
-		usernameLower: 'actor'
-	});
-
-	if (actor == null) {
-		reply.code(404).send('Not Found');
-		return;
-	}
-
 	reply
 		.code(200)
 		.type('application/activity+json')
@@ -65,15 +40,6 @@ server.get('/actor/following', async (request, reply) => {
 });
 
 server.get('/actor/outbox', async (request, reply) => {
-	const actor = await LocalActors.findOne({
-		usernameLower: 'actor'
-	});
-
-	if (actor == null) {
-		reply.code(404).send('Not Found');
-		return;
-	}
-
 	reply
 		.code(200)
 		.type('application/activity+json')

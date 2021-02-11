@@ -3,23 +3,30 @@ import { LocalActor } from '../models/entities/local-actor';
 import { getConnection } from 'typeorm';
 import { genId } from '../misc/gen-id';
 
-export async function getLocalActor(username: string) {
-	let account!: LocalActor;
+let cached: LocalActor;
 
-	// Start transaction
+export async function getActor() {
+	if (cached) return cached;
+	cached = await getLocalActor('actor');
+	return cached;
+}
+
+async function getLocalActor(username: string) {
+	let actor!: LocalActor;
+
 	await getConnection().transaction(async transactionalEntityManager => {
 		const exist = await transactionalEntityManager.findOne(LocalActor, {
 			usernameLower: username.toLowerCase()
 		});
 
 		if (exist) {
-			account = exist;
+			actor = exist;
 			return;
 		}
 
 		const keyPair = await genRsaKeyPair();
 
-		account = await transactionalEntityManager.insert(LocalActor, {
+		actor = await transactionalEntityManager.insert(LocalActor, {
 			id: genId(),
 			username: username,
 			usernameLower: username.toLowerCase(),
@@ -28,5 +35,5 @@ export async function getLocalActor(username: string) {
 		}).then(x => transactionalEntityManager.findOneOrFail(LocalActor, x.identifiers[0]));
 	});
 
-	return account;
+	return actor;
 }

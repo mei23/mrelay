@@ -7,7 +7,7 @@ import { workerMain } from './worker';
 
 // for typeorm
 import 'reflect-metadata';
-import { getLocalActor } from '../services/get-local-actor';
+import { getActor } from '../services/actor';
 
 const logger = new Logger('core', 'cyan');
 export const bootLogger = logger.createSubLogger('boot', 'magenta', false);
@@ -25,7 +25,7 @@ export default async function() {
 
 
 	// X
-	const a = await getLocalActor('actor');
+	const a = await getActor();
 	console.log(JSON.stringify(a));
 
 	// for test
