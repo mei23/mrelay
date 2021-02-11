@@ -23,29 +23,17 @@ server.get('/actor', async (request, reply) => {
 		.send(attachContext(await renderActor(actor, `${config.url}/actor`)));
 });
 
-server.get('/actor/followers', async (request, reply) => {
-	reply
-		.code(200)
-		.type('application/activity+json')
-		.header('Cache-Control', 'public, max-age=180')
-		.send(attachContext(await renderOrderedCollection(`${config.url}/actor/followers`)));
-});
-
-server.get('/actor/following', async (request, reply) => {
+const replyEmptyCollection = async (request: Fastify.FastifyRequest, reply: Fastify.FastifyReply) => {
 	reply
 		.code(200)
 		.type('application/activity+json')
 		.header('Cache-Control', 'public, max-age=180')
 		.send(attachContext(await renderOrderedCollection(`${config.url}/actor/following`)));
-});
+}
 
-server.get('/actor/outbox', async (request, reply) => {
-	reply
-		.code(200)
-		.type('application/activity+json')
-		.header('Cache-Control', 'public, max-age=180')
-		.send(attachContext(await renderOrderedCollection(`${config.url}/actor/outbox`)));
-});
+server.get('/actor/followers', replyEmptyCollection);
+server.get('/actor/following', replyEmptyCollection);
+server.get('/actor/outbox', replyEmptyCollection);
 
 export default (): Promise<void> => new Promise<void>((resolve, reject) => {
 	server.listen(config.port, '0.0.0.0', (err, address) => {
