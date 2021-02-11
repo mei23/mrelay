@@ -14,7 +14,7 @@ import config from '../../config';
 const logger = new Logger('inbox');
 
 // ユーザーのinboxにアクティビティが届いた時の処理
-export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
+export async function processInbox(job: Bull.Job<InboxJobData>): Promise<string> {
 	const signature = job.data.signature;
 	const activity = job.data.activity;
 
@@ -71,4 +71,4 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 	// アクティビティを処理
 	return (await perform(user, activity)) || 'ok';
 	*/
-};
+}

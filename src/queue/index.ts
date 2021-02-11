@@ -2,7 +2,7 @@ import * as Queue from 'bull';
 import * as httpSignature from 'http-signature';
 import config from '../config';
 import processDeliver from './processors/deliver';
-import processInbox from './processors/inbox';
+import { processInbox } from './processors/inbox';
 import { queueLogger } from './logger';
 import { getJobInfo } from './get-job-info';
 import { DeliverJobData, InboxJobData } from './type';
@@ -86,7 +86,7 @@ export function deliver(content: SignedActivity, to: string) {
  * @param activity Activity
  * @param signature Signature
  */
-export function inbox(activity: SignedActivity, signature: httpSignature.IParsedSignature) {
+export function createInboxJob(activity: any, signature: httpSignature.IParsedSignature) {
 	const data = {
 		activity,
 		signature,

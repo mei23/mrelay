@@ -4,6 +4,9 @@ import { attachContext } from '../activitypub/renderer';
 import config from '../config';
 import { renderOrderedCollection } from '../activitypub/renderer/ordered-collection';
 import { getActor } from '../services/actor';
+import * as httpSignature from 'http-signature';
+import * as util from 'util';
+import { createInboxJob } from '../queue';
 
 const server = Fastify.fastify({
 	logger: true,
@@ -13,6 +16,9 @@ const server = Fastify.fastify({
 	],
 	exposeHeadRoutes: true,
 });
+
+server.addContentTypeParser('application/activity+json', { parseAs: 'string' }, (server as any).getDefaultJsonParser('ignore', 'ignore'));
+server.addContentTypeParser('application/ld+json', { parseAs: 'string' }, (server as any).getDefaultJsonParser('ignore', 'ignore'));
 
 server.get('/actor', async (request, reply) => {
 	const actor = await getActor();
@@ -35,6 +41,22 @@ const replyEmptyCollection = async (request: Fastify.FastifyRequest, reply: Fast
 server.get('/actor/followers', replyEmptyCollection);
 server.get('/actor/following', replyEmptyCollection);
 server.get('/actor/outbox', replyEmptyCollection);
+
+server.post('/inbox', {}, async (request, reply) => {
+	let signature;
+
+	try {
+		signature = httpSignature.parseRequest(request.raw, { 'headers': [] });
+	} catch (e) {
+		console.log(`signature parse error: ${util.inspect(e)}`);
+		reply.code(401).send('signature parse error');
+		return;
+	}
+
+	await createInboxJob(request.body, signature);
+
+	reply.code(202).send('accepted');
+});
 
 export default (): Promise<void> => new Promise<void>((resolve, reject) => {
 	server.listen(config.port, '0.0.0.0', (err, address) => {
