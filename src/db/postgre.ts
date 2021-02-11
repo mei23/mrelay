@@ -1,3 +1,5 @@
+/* eslint-disable no-empty */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createConnection, Logger, getConnection } from 'typeorm';
 import config from '../config';
 import { dbLogger } from './logger';
