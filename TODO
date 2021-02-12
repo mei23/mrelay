@@ -1,3 +1,13 @@
 
 inbox
 queue
+
+peers
+  inbox
+  uri
+  host
+
+    active
+    requested
+    removed
+    none

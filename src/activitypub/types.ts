@@ -67,7 +67,7 @@ export const extractIdNullable = (object: IObject | Link | null | undefined): st
 	return object == null ? object : typeof object === 'string' ? object : isObject(object) ? object.id : object.href;
 }
 
-export const extractId = (object: IObject | Link): string => {
+export const extractId = (object: IObject | Link | null | undefined): string => {
 	const id = extractIdNullable(object);
 	if (id == null) throw 'no id';
 	return id;

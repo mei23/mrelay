@@ -1,6 +1,6 @@
 import { LocalActor } from '../../models/entities/local-actor';
 import { createPublicKey } from 'crypto';
-import { IActor } from '../type';
+import { IActor } from '../types';
 
 export async function renderActor(user: LocalActor, id: string): Promise<IActor> {
 	const publicKey = {

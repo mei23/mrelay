@@ -1,15 +1,14 @@
 import * as Bull from 'bull';
 import * as httpSignature from 'http-signature';
-//import { IRemoteUser } from '../../models/user';
-//import perform from '../../remote/activitypub/perform';
-//import { resolvePerson } from '../../remote/activitypub/models/person';
 import Logger from '../../services/logger';
-//import { getApId } from '../../remote/activitypub/type';
 import { InboxJobData } from '../type';
-//import DbResolver from '../../remote/activitypub/db-resolver';
 import { inspect } from 'util';
-//import { extractApHost } from '../../misc/convert-host';
-import config from '../../config';
+import { RemoteActor } from '../../models/entities/remote-actor';
+import DbResolver from '../../activitypub/db-resolver';
+import { extractIdNullable } from '../../activitypub/types';
+import { toSingle } from '../../activitypub/quick';
+import { resolveActor } from '../../activitypub/actor';
+import { toPuny } from '../../misc/convert-host';
 
 const logger = new Logger('inbox');
 
@@ -22,20 +21,23 @@ export async function processInbox(job: Bull.Job<InboxJobData>): Promise<string>
 	logger.debug(inspect(job.data));
 	//#endregion
 
-	return 'Unimplemented';
-	/*
+	// 取得は別にキャッシュして大丈夫
+
 	const dbResolver = new DbResolver();
 
 	//#region resolve http-signature signer
-	let user: IRemoteUser | null;
+	let user: RemoteActor | null;
 
 	// keyIdを元にDBから取得
-	user = await dbResolver.getRemoteUserFromKeyId(signature.keyId);
+	user = await dbResolver.getRemoteActor(signature.keyId);
 
 	// || activity.actorを元にDBから取得 || activity.actorを元にリモートから取得
 	if (user == null) {
+		const actorUri = extractIdNullable(toSingle(activity.actor));
+		if (actorUri == null) throw 'x';
+	
 		try {
-			user = await resolvePerson(getApId(activity.actor)) as IRemoteUser;
+			user = await resolveActor(actorUri);
 		} catch (e) {
 			// 対象が4xxならスキップ
 			if (e.statusCode >= 400 && e.statusCode < 500) {
@@ -52,23 +54,24 @@ export async function processInbox(job: Bull.Job<InboxJobData>): Promise<string>
 	//#endregion
 
 	// http-signature signerのpublicKeyを元にhttp-signatureを検証
-	const httpSignatureValidated = httpSignature.verifySignature(signature, user.publicKey.publicKeyPem);
+	const httpSignatureValidated = httpSignature.verifySignature(signature, user.publicKey);
 
 	// また、http-signatureのsignerは、activity.actorと一致する必要がある
 	if (!httpSignatureValidated || user.uri !== activity.actor) {
-		return `skip: http-signature verification failed and ${config.ignoreApForwarded ? 'ignoreApForwarded' : 'no LD-Signature'}. keyId=${signature.keyId}`;
+		return `skip: http-signature verification failed and no LD-Signature'}. keyId=${signature.keyId}`;
 	}
 
 	// activity.idがあればホストが署名者のホストであることを確認する
 	if (typeof activity.id === 'string') {
-		const signerHost = extractApHost(user.uri);
-		const activityIdHost = extractApHost(activity.id);
+		const signerHost = toPuny(user.uri);
+		const activityIdHost = toPuny(activity.id);
 		if (signerHost !== activityIdHost) {
 			return `skip: signerHost(${signerHost}) !== activity.id host(${activityIdHost}`;
 		}
 	}
 
 	// アクティビティを処理
-	return (await perform(user, activity)) || 'ok';
-	*/
+	//return (await perform(user, activity)) || 'ok';
+
+	return 'prs inbox';
 }

@@ -1,4 +1,4 @@
-import { IObject, IOrderedCollectionPage, Link } from '../type';
+import { IObject, IOrderedCollectionPage, Link } from '../types';
 
 /**
  * Render OrderedCollectionPage

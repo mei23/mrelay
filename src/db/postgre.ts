@@ -6,6 +6,7 @@ import * as highlight from 'cli-highlight';
 
 import { program } from '../argv';
 import { LocalActor } from '../models/entities/local-actor';
+import { RemoteActor } from '../models/entities/remote-actor';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -44,7 +45,7 @@ class MyCustomLogger implements Logger {
 }
 
 export const entities = [
-	LocalActor
+	LocalActor, RemoteActor
 ];
 
 export function initDb(justBorrow = false, sync = false, forceRecreate = false) {

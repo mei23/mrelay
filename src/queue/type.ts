@@ -1,5 +1,5 @@
 import * as httpSignature from 'http-signature';
-import { SignedActivity } from '../activitypub/type';
+import { SignedActivity } from '../activitypub/types';
 
 export type DeliverJobData = {
 	/** Activity */

@@ -6,7 +6,7 @@ import { processInbox } from './processors/inbox';
 import { queueLogger } from './logger';
 import { getJobInfo } from './get-job-info';
 import { DeliverJobData, InboxJobData } from './type';
-import { SignedActivity } from '../activitypub/type';
+import { SignedActivity } from '../activitypub/types';
 
 function initializeQueue<T>(name: string, limitPerSec = -1) {
 	return new Queue<T>(name, config.redis != null ? {
